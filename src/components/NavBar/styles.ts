@@ -1,8 +1,13 @@
 import { styled } from "@/styles";
 
+export const Container = styled("div", {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+});
+
 export const NavContainer = styled("nav", {
-    maxWidth: "1280px",
-    border: "2px solid black",
+    width: "1280px",
     padding: "$8 $8",
     display: "flex",
     alignItems: "center",
