@@ -5,6 +5,7 @@ export default function Document() {
     return (
         <Html lang="pt-br">
             <Head>
+                <title>Antiquário</title>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link
                     rel="preconnect"

@@ -1,14 +1,28 @@
 import { styled } from "@/styles";
 
 export const HeaderContainer = styled("header", {
-    padding: "$6",
+    padding: "$1 $20 $1 $20",
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
-    border: "2px solid black",
+    backgroundColor: "$orangeTheme",
+    color: "$lightWhite",
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+
+    a: {
+        display: "flex",
+        alignItems: "center",
+        gap: "$1",
+
+        color: "$lightWhite",
+    },
 });
 
 export const ButtonGroup = styled("div", {
     display: "flex",
-    gap: "$2",
+    alignItems: "center",
+    gap: "$4",
+});
+
+export const Icons = styled("span", {
+    verticalAlign: "middle",
 });

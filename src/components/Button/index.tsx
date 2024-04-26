@@ -19,8 +19,8 @@ export const Button = styled("button", {
     transition: "150ms",
 
     svg: {
-        width: "$4",
-        height: "$4",
+        width: "$5",
+        height: "$5",
     },
 
     "&:disabled": {
@@ -38,7 +38,7 @@ export const Button = styled("button", {
                 color: "$lightWhite",
 
                 "&:not(:disabled):hover": {
-                    backgroundColor: "$danger500",
+                    backgroundColor: "$orangeTheme",
                 },
 
                 "&:disabled": {

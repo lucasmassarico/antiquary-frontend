@@ -15,7 +15,7 @@ export const colors = {
     kombuGreen: "#283618",
     lightWhite: "#fefae0",
     lightBrown: "#dda15e",
-    orangeTheme: "bc6c25",
+    orangeTheme: "#bc6c25",
     // end theme
 
     danger300: "#FF4D4F",
