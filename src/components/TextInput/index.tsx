@@ -13,10 +13,10 @@ export const TextInput = forwardRef<ElementRef<typeof Input>, TextInputProps>(
         return (
             <TextInputContainer>
                 <Input ref={ref} {...rest} />
-                {suffix}
+                <div className="suffix">{suffix}</div>
             </TextInputContainer>
-        )
+        );
     }
-)
+);
 
-TextInput.displayName = 'TextInput'
+TextInput.displayName = "TextInput";

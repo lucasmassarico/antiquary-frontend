@@ -12,10 +12,11 @@ export const colors = {
 
     // theme
     cornsilk: "#606c38",
-    kombuGreen: "#283618",
+    greenTheme: "#0B3F30",
     lightWhite: "#fefae0",
     lightBrown: "#dda15e",
-    orangeTheme: "#bc6c25",
+    lightOrange: "#E39828",
+    orangeTheme: "#EA572A",
     // end theme
 
     danger300: "#FF4D4F",

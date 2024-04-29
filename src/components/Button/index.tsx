@@ -10,7 +10,7 @@ export const Button = styled("button", {
     boxSizing: "border-box",
     minWidth: 120,
     padding: "0 $4",
-    borderRadius: "$lg",
+    borderRadius: "$md",
     fontSize: "$md",
     fontWeight: "$regular",
     fontFamily: "$default",
@@ -34,7 +34,7 @@ export const Button = styled("button", {
     variants: {
         variant: {
             primary: {
-                backgroundColor: "$kombuGreen",
+                backgroundColor: "$greenTheme",
                 color: "$lightWhite",
 
                 "&:not(:disabled):hover": {

@@ -5,7 +5,6 @@ export default function Document() {
     return (
         <Html lang="pt-br">
             <Head>
-                <title>Antiquário</title>
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link
                     rel="preconnect"
@@ -17,6 +16,8 @@ export default function Document() {
                     href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
                     rel="stylesheet"
                 />
+
+                <link rel="shortcut icon" href="/static/armchair.svg" />
 
                 <style
                     id="stitches"

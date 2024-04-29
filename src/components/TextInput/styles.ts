@@ -21,6 +21,10 @@ export const TextInputContainer = styled("div", {
         filter: "invert(100%) brightness(30%)",
     },
 
+    "& .suffix": {
+        cursor: "pointer",
+    },
+
     variants: {
         size: {
             sm: {
@@ -39,7 +43,7 @@ export const TextInputContainer = styled("div", {
 });
 
 export const Input = styled("input", {
-    width: "100%",
+    width: "$60",
     border: 0,
     backgroundColor: "transparent",
     fontFamily: "$default",

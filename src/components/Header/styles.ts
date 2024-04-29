@@ -4,7 +4,7 @@ export const HeaderContainer = styled("header", {
     padding: "$1 $20 $1 $20",
     display: "flex",
     justifyContent: "space-between",
-    backgroundColor: "$orangeTheme",
+    backgroundColor: "$lightOrange",
     color: "$lightWhite",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
 

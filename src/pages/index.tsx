@@ -5,6 +5,7 @@ import { NextSeo } from "next-seo";
 import { NavBar } from "@/components/NavBar";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
+import { Container } from "@/components/Container";
 
 export default function Home() {
     return (
@@ -12,8 +13,9 @@ export default function Home() {
             <NextSeo title="Antiquário do Feneme" />
             <Header />
             <NavBar />
-            <h1>Hello World</h1>
-            <Button>Botão</Button>
+            <Container style={{ border: "1px solid black" }}>
+                <h1>Hello World</h1>
+            </Container>
         </>
     );
 }

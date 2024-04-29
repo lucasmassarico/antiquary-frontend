@@ -1,7 +1,8 @@
 // libs
 import Image from "next/image";
 import Link from "next/link";
-import { WhatsappLogo } from "phosphor-react";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 // components
 import { Button } from "../Button";
@@ -13,23 +14,56 @@ import { Container, NavContainer, ButtonGroup } from "./styles";
 // images & icons
 import logoArmChair from "@/assets/armchair.svg";
 import { MagnifyingGlass } from "phosphor-react";
+import { Heart } from "phosphor-react";
 
 export const NavBar = () => {
+    const router = useRouter();
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const handleSearch = () => {
+        if (searchQuery.trim() !== "") {
+            router.push(`/product/find?q=${encodeURIComponent(searchQuery)}`);
+        }
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
+    const handleIconClick = () => {
+        handleSearch();
+    };
+
     return (
         <Container>
             <NavContainer>
-                <Image src={logoArmChair} alt="Antiquário" width={50} />
+                <Link
+                    href="/"
+                    style={{ textDecoration: "none" }}
+                    className="logoContainer"
+                >
+                    <Image src={logoArmChair} alt="Antiquário" width={50} />
+                </Link>
                 <ButtonGroup>
                     <TextInput
                         placeholder="Digite sua busca"
-                        suffix={<MagnifyingGlass color="#000" size={25} />}
+                        value={searchQuery}
+                        onChange={handleChange}
+                        onKeyDown={handleKeyPress}
+                        suffix={
+                            <MagnifyingGlass
+                                color="#000"
+                                size={25}
+                                onClick={handleIconClick}
+                            />
+                        }
                     />
-
-                    <Link href="/" style={{ textDecoration: "none" }}>
-                        <Button>
-                            Contatos <WhatsappLogo size={72} />
-                        </Button>
-                    </Link>
                 </ButtonGroup>
             </NavContainer>
         </Container>
