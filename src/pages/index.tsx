@@ -2,20 +2,15 @@
 import { NextSeo } from "next-seo";
 
 // components
-import { NavBar } from "@/components/NavBar";
-import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
 import { ProductCard } from "@/components/ProductCard";
 import { ProductsContainer } from "@/components/ProductsContainer";
-import { Footer } from "@/components/Footer";
 
 export default function Home() {
     return (
         <>
-            <NextSeo title="Antiquário do Feneme" />
-            <Header />
-            <NavBar />
+            <NextSeo title="Antiquário" />
             <Container>
                 <ProductsContainer>
                     <ProductCard
@@ -57,7 +52,6 @@ export default function Home() {
                     />
                 </ProductsContainer>
             </Container>
-            <Footer />
         </>
     );
 }
