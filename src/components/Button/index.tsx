@@ -38,13 +38,16 @@ export const Button = styled("button", {
                 color: "$lightWhite",
 
                 "&:not(:disabled):hover": {
-                    backgroundColor: "$orangeTheme",
+                    backgroundColor: "$lightOrange",
                 },
 
                 "&:disabled": {
                     background: "$gray200",
                     cursor: "not-allowed",
                 },
+            },
+            productCard: {
+                backgroundColor: "$greenTheme",
             },
         },
 

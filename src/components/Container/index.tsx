@@ -2,11 +2,14 @@ import { ComponentProps, ElementType } from "react";
 import { styled } from "@/styles";
 
 export const Container = styled("div", {
-    width: "1280px",
-    margin: "0 auto",
+    maxWidth: "1280px",
+    width: "100%",
+    margin: "$2 auto",
+    padding: "$4",
     display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    overflow: "hidden",
+    backgroundColor: "$gray50",
+    borderRadius: "$md",
 });
 
 export interface ContainerProps extends ComponentProps<typeof Container> {

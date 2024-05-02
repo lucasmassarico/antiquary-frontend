@@ -6,6 +6,9 @@ import { NavBar } from "@/components/NavBar";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/Button";
 import { Container } from "@/components/Container";
+import { ProductCard } from "@/components/ProductCard";
+import { ProductsContainer } from "@/components/ProductsContainer";
+import { Footer } from "@/components/Footer";
 
 export default function Home() {
     return (
@@ -13,9 +16,46 @@ export default function Home() {
             <NextSeo title="Antiquário do Feneme" />
             <Header />
             <NavBar />
-            <Container style={{ border: "1px solid black" }}>
-                <h1>Hello World</h1>
+            <Container>
+                <ProductsContainer>
+                    <ProductCard
+                        title="Produto TEStEasfdsffffffffffffffffffffffffffffffffffffffeeexaaasssss"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 1"
+                    />
+                    <ProductCard
+                        title="Produto 2"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 2"
+                    />
+                    <ProductCard
+                        title="Produto 3"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 3"
+                    />
+                    <ProductCard
+                        title="Produto 4"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 4"
+                    />
+                    <ProductCard
+                        title="Produto 5"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 5"
+                    />
+                    <ProductCard
+                        title="Produto 6"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 6"
+                    />
+                    <ProductCard
+                        title="Produto 7"
+                        imageSrc="/static/new_product.png"
+                        imageAlt="Produto 7"
+                    />
+                </ProductsContainer>
             </Container>
+            <Footer />
         </>
     );
 }
