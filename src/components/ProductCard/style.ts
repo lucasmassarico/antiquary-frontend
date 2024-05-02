@@ -18,9 +18,11 @@ export const ProductImage = styled("div", {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    height: "100%",
 
     ".productImage": {
         width: "100%",
+        height: "100%",
         objectFit: "cover",
     },
 });
@@ -46,6 +48,7 @@ export const ProductTitle = styled("div", {
 });
 
 export const ProductPrice = styled("div", {
+    height: "$4",
     margin: "$2 0",
     h2: {
         fontSize: "$xl",

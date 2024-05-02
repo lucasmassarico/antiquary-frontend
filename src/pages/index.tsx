@@ -19,9 +19,10 @@ export default function Home() {
             <Container>
                 <ProductsContainer>
                     <ProductCard
-                        title="Produto TEStEasfdsffffffffffffffffffffffffffffffffffffffeeexaaasssss"
+                        title="Produto 1"
                         imageSrc="/static/new_product.png"
                         imageAlt="Produto 1"
+                        price={15500}
                     />
                     <ProductCard
                         title="Produto 2"
@@ -52,6 +53,7 @@ export default function Home() {
                         title="Produto 7"
                         imageSrc="/static/new_product.png"
                         imageAlt="Produto 7"
+                        price={15500}
                     />
                 </ProductsContainer>
             </Container>

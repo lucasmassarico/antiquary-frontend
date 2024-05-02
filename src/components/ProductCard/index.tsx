@@ -37,7 +37,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                 </ProductTitle>
                 <ProductPrice>
                     <h2>
-                        <span>{price ? `R$ ${price}` : ""}</span>
+                        <span>{price ? `R$ ${price.toFixed(2)}` : ""}</span>
                     </h2>
                 </ProductPrice>
                 <ButtonContainer>
