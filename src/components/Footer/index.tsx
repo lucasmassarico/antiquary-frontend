@@ -17,12 +17,23 @@ import {
     Phone,
 } from "phosphor-react";
 
+interface FooterCategory {
+    name: string;
+    url_name?: string;
+}
+
 interface FooterProps {
-    categories: string[];
+    categories: FooterCategory[];
 }
 
 export const Footer: React.FC<FooterProps> = ({ categories }) => {
     const isOverflow = categories.length > 15;
+
+    const toTitleCase = (str: string) => {
+        return str.replace(/\w\S*/g, function (txt) {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        });
+    };
 
     return (
         <FooterContainer>
@@ -32,9 +43,14 @@ export const Footer: React.FC<FooterProps> = ({ categories }) => {
                     {/* Mostra até 16 categorias */}
                     {categories
                         .slice(0, 15)
-                        .map((category: string, index: number) => (
-                            <ColumnItemLink key={index} href={`/${category}`}>
-                                <p>{category}</p>
+                        .map((category: FooterCategory, index: number) => (
+                            <ColumnItemLink
+                                key={index}
+                                href={`/${
+                                    category.url_name || category.name
+                                }`.toLowerCase()}
+                            >
+                                <p>{toTitleCase(category.name)}</p>
                             </ColumnItemLink>
                         ))}
                     {/* Mostra a linha "Todas Categorias" se houver overflow */}

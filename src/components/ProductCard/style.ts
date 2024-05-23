@@ -18,7 +18,7 @@ export const ProductImage = styled("div", {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "100%",
+    height: "$36",
 
     ".productImage": {
         width: "100%",
