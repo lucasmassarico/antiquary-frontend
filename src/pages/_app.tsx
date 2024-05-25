@@ -34,7 +34,7 @@ export default function App({
             </Head>
             <Header />
             <NavBar />
-            <Component {...pageProps} />;
+            <Component {...pageProps} />
             <Footer categories={categories} />
         </>
     );
