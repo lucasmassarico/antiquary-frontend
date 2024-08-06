@@ -11,7 +11,3 @@ export const Container = styled("div", {
     backgroundColor: "$gray50",
     borderRadius: "$md",
 });
-
-export interface ContainerProps extends ComponentProps<typeof Container> {
-    as?: ElementType;
-}

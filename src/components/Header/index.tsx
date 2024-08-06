@@ -31,6 +31,11 @@ export const Header = () => {
                 </Link>
             </ButtonGroup>
             <ButtonGroup>
+                <Link href="/" style={{ textDecoration: "none" }}>
+                    <span>
+                        <b>Usuário</b>
+                    </span>
+                </Link>
                 <Link href="/sobrenos" style={{ textDecoration: "none" }}>
                     <span>Fale Conosco</span>
                 </Link>

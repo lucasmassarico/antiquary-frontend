@@ -1,4 +1,3 @@
-import { ComponentProps, ElementType } from "react";
 import { styled } from "@/styles";
 
 export const ProductsContainer = styled("div", {
@@ -9,8 +8,3 @@ export const ProductsContainer = styled("div", {
     gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
     gap: "$6",
 });
-
-export interface ProductsContainerProps
-    extends ComponentProps<typeof ProductsContainer> {
-    as?: ElementType;
-}

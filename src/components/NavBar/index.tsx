@@ -22,7 +22,7 @@ export const NavBar = () => {
 
     const handleSearch = () => {
         if (searchQuery.trim() !== "") {
-            router.push(`/product/find?q=${encodeURIComponent(searchQuery)}`);
+            router.push(`/busca/${encodeURIComponent(searchQuery)}`);
         }
     };
 
@@ -48,7 +48,12 @@ export const NavBar = () => {
                     style={{ textDecoration: "none" }}
                     className="logoContainer"
                 >
-                    <Image src={logoArmChair} alt="Antiquário" width={50} />
+                    <Image
+                        src={logoArmChair}
+                        alt="Antiquário"
+                        width={50}
+                        priority
+                    />
                 </Link>
                 <ButtonGroup>
                     <TextInput
