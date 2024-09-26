@@ -1,5 +1,8 @@
 // libs
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Button, Fade } from "@mui/material";
+import { useRouter } from "next/router";
 
 // styles
 import { HeaderContainer, ButtonGroup } from "./styles";
@@ -7,8 +10,35 @@ import { HeaderContainer, ButtonGroup } from "./styles";
 // images & icons
 import { Phone, Envelope, InstagramLogo, FacebookLogo } from "phosphor-react";
 
+// Importa o componente ProfileMenu
+import ProfileMenu from "@/components/ProfileMenu";
+
+const Cookies = require("js-cookie");
+
 export const Header = () => {
     const iconSize = 24;
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const router = useRouter();
+
+    const checkLoginStatus = () => {
+        const token = Cookies.get("token");
+        setIsLoggedIn(!!token);
+    };
+
+    useEffect(() => {
+        checkLoginStatus();
+
+        const handleLogin = () => checkLoginStatus();
+        const handleLogout = () => checkLoginStatus();
+
+        window.addEventListener("login", handleLogin);
+        window.addEventListener("logout", handleLogout);
+
+        return () => {
+            window.removeEventListener("login", handleLogin);
+            window.removeEventListener("logout", handleLogout);
+        };
+    }, []);
 
     return (
         <HeaderContainer>
@@ -31,11 +61,26 @@ export const Header = () => {
                 </Link>
             </ButtonGroup>
             <ButtonGroup>
-                <Link href="/" style={{ textDecoration: "none" }}>
-                    <span>
-                        <b>Usuário</b>
-                    </span>
-                </Link>
+                {isLoggedIn ? (
+                    <ProfileMenu />
+                ) : (
+                    <Link href="/login" style={{ textDecoration: "none" }}>
+                        <Button
+                            variant="outlined"
+                            style={{
+                                textTransform: "none",
+                                fontWeight: "bold",
+                                borderRadius: "8px",
+                                borderColor: "white",
+                                color: "white",
+                                padding: "0",
+                            }}
+                        >
+                            Login
+                        </Button>
+                    </Link>
+                )}
+
                 <Link href="/sobrenos" style={{ textDecoration: "none" }}>
                     <span>Fale Conosco</span>
                 </Link>

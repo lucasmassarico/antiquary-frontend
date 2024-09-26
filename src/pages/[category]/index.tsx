@@ -8,6 +8,7 @@ import { Container } from "@/components/Container";
 import { ProductsContainer } from "@/components/ProductsContainer";
 import { ProductCard } from "@/components/ProductCard";
 import { CategoryNotFound } from "@/components/CategoryNotFound";
+import CircularProgress from "@mui/material/CircularProgress"; // Importando o spinner do MUI
 
 // types
 import { Category, Product } from "@/types";
@@ -20,10 +21,12 @@ export default function CategoryPage() {
     const [products, setProducts] = useState<Product[]>([]);
     const [additionalProducts, setAdditionalProducts] = useState<Product[]>([]);
     const [errorCategory, setErrorCategory] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true); // Estado de loading
 
     useEffect(() => {
         if (categoryUrl) {
             setErrorCategory(false);
+            setLoading(true); // Inicia o loading
             api.get(`/categories/find/by_urlname/${categoryUrl}`)
                 .then((response) => {
                     setCategory(response.data);
@@ -31,12 +34,14 @@ export default function CategoryPage() {
                 .catch((error: any) => {
                     console.error("Error fetching category:", error);
                     setErrorCategory(true);
-                });
+                })
+                .finally(() => setLoading(false)); // Termina o loading
         }
     }, [categoryUrl]);
 
     useEffect(() => {
         if (category?.id) {
+            setLoading(true); // Inicia o loading
             api.get(`/products/find/by_category_id/${category?.id}`)
                 .then((response) => {
                     setProducts(response.data);
@@ -46,7 +51,8 @@ export default function CategoryPage() {
                 })
                 .catch((error: any) => {
                     console.error("Error fetching products:", error);
-                });
+                })
+                .finally(() => setLoading(false)); // Termina o loading
         }
     }, [category?.id]);
 
@@ -73,7 +79,19 @@ export default function CategoryPage() {
     return (
         <>
             <Container>
-                {errorCategory ? (
+                {loading ? (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            height: "50vh",
+                        }}
+                    >
+                        <CircularProgress />{" "}
+                        {/* Mostrando o spinner enquanto carrega */}
+                    </div>
+                ) : errorCategory ? (
                     <CategoryNotFound />
                 ) : (
                     <>
@@ -84,6 +102,8 @@ export default function CategoryPage() {
                                 {products.map((product) => (
                                     <ProductCard
                                         key={product.id}
+                                        id={product.id}
+                                        activated={product.activated}
                                         title={toTitleCase(product.name)}
                                         imageSrc={`${staticFilesServer}${
                                             product.image_thumbnail_name.startsWith(
@@ -94,6 +114,7 @@ export default function CategoryPage() {
                                         }${product.image_thumbnail_name}`}
                                         imageAlt={product.name}
                                         price={product.price}
+                                        stock_quantity={product.stock_quantity}
                                     />
                                 ))}
                             </ProductsContainer>
@@ -120,6 +141,8 @@ export default function CategoryPage() {
                             {additionalProducts.map((product) => (
                                 <ProductCard
                                     key={product.id}
+                                    id={product.id}
+                                    activated={product.activated}
                                     title={toTitleCase(product.name)}
                                     imageSrc={`${staticFilesServer}${
                                         product.image_thumbnail_name.startsWith(
@@ -130,6 +153,7 @@ export default function CategoryPage() {
                                     }${product.image_thumbnail_name}`}
                                     imageAlt={product.name}
                                     price={product.price}
+                                    stock_quantity={product.stock_quantity}
                                 />
                             ))}
                         </ProductsContainer>

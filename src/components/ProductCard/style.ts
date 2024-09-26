@@ -4,13 +4,24 @@ export const ProductContainer = styled("div", {
     display: "grid",
     justifyContent: "center",
     alignItems: "center",
-    border: "1px  solid $gray300",
+    border: "1px solid $gray300",
     overflow: "hidden",
     backgroundColor: "$white",
     borderRadius: "$md",
 
     maxHeight: "25rem",
     maxWidth: "15rem",
+
+    variants: {
+        activated: {
+            false: {
+                opacity: 0.5, // Diminui a opacidade se o produto não estiver ativo
+            },
+            true: {
+                opacity: 1, // Opacidade normal se o produto estiver ativo
+            },
+        },
+    },
 });
 
 export const ProductImage = styled("div", {

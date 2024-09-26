@@ -15,7 +15,18 @@ export default function Home() {
 
     useEffect(() => {
         api.get("products/find/all").then((response) => {
-            setProducts(response.data);
+            // Ordena os produtos antes de definir o estado
+            const sortedProducts = response.data.sort(
+                (a: Product, b: Product) => {
+                    const aIsInactive = !a.activated || a.stock_quantity === 0;
+                    const bIsInactive = !b.activated || b.stock_quantity === 0;
+
+                    if (aIsInactive && !bIsInactive) return 1; // Move `a` para o final
+                    if (!aIsInactive && bIsInactive) return -1; // Mantém `b` no final
+                    return 0; // Mantém a ordem original se ambos estiverem na mesma condição
+                }
+            );
+            setProducts(sortedProducts);
         });
     }, []);
 
@@ -32,6 +43,9 @@ export default function Home() {
                 <ProductsContainer>
                     {products.map((product) => (
                         <ProductCard
+                            id={product.id}
+                            activated={product.activated}
+                            stock_quantity={product.stock_quantity}
                             key={product.id}
                             title={toTitleCase(product.name)}
                             imageSrc={`${staticFilesServer}${
