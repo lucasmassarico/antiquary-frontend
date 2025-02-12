@@ -1,4 +1,3 @@
-// ProfileMenu.tsx
 import { useState } from "react";
 import {
     Menu,
@@ -13,6 +12,8 @@ import {
     Category,
     ExitToApp,
     Storefront,
+    Receipt, // Importing the Receipt icon
+    PeopleAlt, // Importing the PeopleAlt icon for Users
 } from "@mui/icons-material";
 import { useRouter } from "next/router";
 import Cookies from "js-cookie";
@@ -84,6 +85,18 @@ const ProfileMenu = () => {
                         <Category fontSize="small" />
                     </ListItemIcon>
                     Categorias
+                </MenuItem>
+                <MenuItem onClick={() => router.push("/admin/sold-products")}>
+                    <ListItemIcon>
+                        <Receipt fontSize="small" />
+                    </ListItemIcon>
+                    Produtos Vendidos
+                </MenuItem>
+                <MenuItem onClick={() => router.push("/admin/users")}>
+                    <ListItemIcon>
+                        <PeopleAlt fontSize="small" />
+                    </ListItemIcon>
+                    Usuários
                 </MenuItem>
                 <Divider /> {/* Barra separadora */}
                 <MenuItem onClick={handleLogout}>

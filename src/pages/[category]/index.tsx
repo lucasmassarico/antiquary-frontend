@@ -1,14 +1,12 @@
 // libs
 import { useRouter } from "next/router";
-import { api, staticFilesServer } from "@/lib/axios";
+import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 
 // components
-import { Container } from "@/components/Container";
-import { ProductsContainer } from "@/components/ProductsContainer";
-import { ProductCard } from "@/components/ProductCard";
 import { CategoryNotFound } from "@/components/CategoryNotFound";
 import CircularProgress from "@mui/material/CircularProgress"; // Importando o spinner do MUI
+import ProductList from "@/components/ProductList";
 
 // types
 import { Category, Product } from "@/types";
@@ -56,7 +54,7 @@ export default function CategoryPage() {
         }
     }, [category?.id]);
 
-    const fetchAdditionalProducts = (excludeCategories) => {
+    const fetchAdditionalProducts = (excludeCategories: number[]) => {
         api.get(`/products/find/all`, {
             params: {
                 excluded_categories: JSON.stringify(excludeCategories),
@@ -70,58 +68,31 @@ export default function CategoryPage() {
             });
     };
 
-    const toTitleCase = (str: string) => {
-        return str.replace(/\w\S*/g, function (txt) {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-        });
-    };
-
     return (
         <>
-            <Container>
-                {loading ? (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            height: "50vh",
-                        }}
-                    >
-                        <CircularProgress />{" "}
-                        {/* Mostrando o spinner enquanto carrega */}
-                    </div>
-                ) : errorCategory ? (
-                    <CategoryNotFound />
-                ) : (
-                    <>
-                        {products.length === 0 ? (
-                            <p>Não há produtos cadastrados nesta categoria.</p>
-                        ) : (
-                            <ProductsContainer>
-                                {products.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        id={product.id}
-                                        activated={product.activated}
-                                        title={toTitleCase(product.name)}
-                                        imageSrc={`${staticFilesServer}${
-                                            product.image_thumbnail_name.startsWith(
-                                                "/"
-                                            )
-                                                ? ""
-                                                : "/"
-                                        }${product.image_thumbnail_name}`}
-                                        imageAlt={product.name}
-                                        price={product.price}
-                                        stock_quantity={product.stock_quantity}
-                                    />
-                                ))}
-                            </ProductsContainer>
-                        )}
-                    </>
-                )}
-            </Container>
+            {loading ? (
+                <div
+                    style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "50vh",
+                    }}
+                >
+                    <CircularProgress />{" "}
+                    {/* Mostrando o spinner enquanto carrega */}
+                </div>
+            ) : errorCategory ? (
+                <CategoryNotFound />
+            ) : (
+                <>
+                    {products.length === 0 ? (
+                        <p>Não há produtos cadastrados nesta categoria.</p>
+                    ) : (
+                        <ProductList products={products} />
+                    )}
+                </>
+            )}
             {additionalProducts.length > 0 && (
                 <>
                     <div
@@ -136,28 +107,10 @@ export default function CategoryPage() {
                             De uma olhada em alguns outros produtos nossos...
                         </h3>
                     </div>
-                    <Container>
-                        <ProductsContainer>
-                            {additionalProducts.map((product) => (
-                                <ProductCard
-                                    key={product.id}
-                                    id={product.id}
-                                    activated={product.activated}
-                                    title={toTitleCase(product.name)}
-                                    imageSrc={`${staticFilesServer}${
-                                        product.image_thumbnail_name.startsWith(
-                                            "/"
-                                        )
-                                            ? ""
-                                            : "/"
-                                    }${product.image_thumbnail_name}`}
-                                    imageAlt={product.name}
-                                    price={product.price}
-                                    stock_quantity={product.stock_quantity}
-                                />
-                            ))}
-                        </ProductsContainer>
-                    </Container>
+                    <ProductList
+                        products={additionalProducts}
+                        showFilters={false}
+                    />
                 </>
             )}
         </>

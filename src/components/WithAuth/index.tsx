@@ -15,7 +15,7 @@ const withAuth = (WrappedComponent: React.FC) => {
             } else {
                 setVerified(true);
             }
-        }, []);
+        }, [router]);
 
         if (!verified) {
             return null;

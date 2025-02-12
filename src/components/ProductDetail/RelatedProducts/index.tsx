@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import { api } from "@/lib/axios";
 import { Product } from "@/types";
@@ -19,11 +19,7 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
 }) => {
     const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
-    useEffect(() => {
-        fetchRelatedProducts();
-    }, [categoryId]);
-
-    const fetchRelatedProducts = async () => {
+    const fetchRelatedProducts = useCallback(async () => {
         try {
             const response = await api.get(
                 `products/find/by_category_id/${categoryId}`
@@ -35,7 +31,11 @@ const RelatedProducts: React.FC<RelatedProductsProps> = ({
         } catch (error) {
             console.error("Failed to fetch related products:", error);
         }
-    };
+    }, [categoryId, currentProductId]);
+
+    useEffect(() => {
+        fetchRelatedProducts();
+    }, [fetchRelatedProducts]);
 
     const settings = {
         dots: false,

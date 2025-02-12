@@ -1,14 +1,11 @@
 // libs
 import { NextSeo } from "next-seo";
-import { api, staticFilesServer } from "@/lib/axios";
+import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { Product } from "@/types";
 
 // components
-import { Button } from "@/components/Button";
-import { Container } from "@/components/Container";
-import { ProductCard } from "@/components/ProductCard";
-import { ProductsContainer } from "@/components/ProductsContainer";
+import ProductList from "@/components/ProductList";
 
 export default function Home() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -39,26 +36,7 @@ export default function Home() {
     return (
         <>
             <NextSeo title="Antiquário" />
-            <Container>
-                <ProductsContainer>
-                    {products.map((product) => (
-                        <ProductCard
-                            id={product.id}
-                            activated={product.activated}
-                            stock_quantity={product.stock_quantity}
-                            key={product.id}
-                            title={toTitleCase(product.name)}
-                            imageSrc={`${staticFilesServer}${
-                                product.image_thumbnail_name.startsWith("/")
-                                    ? ""
-                                    : "/"
-                            }${product.image_thumbnail_name}`}
-                            imageAlt={product.name}
-                            price={product.price}
-                        />
-                    ))}
-                </ProductsContainer>
-            </Container>
+            <ProductList products={products} />
         </>
     );
 }

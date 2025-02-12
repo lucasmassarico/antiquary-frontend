@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { getImageUrl } from "@/helpers";
 import {
     Modal,
     Box,
@@ -10,13 +11,22 @@ import {
     FormControl,
     MenuItem,
     InputLabel,
+    Grid,
+    IconButton,
 } from "@mui/material";
 import { SelectChangeEvent } from "@mui/material/Select";
 import { Category, Product } from "@/types";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { api } from "@/lib/axios";
 import RichEditor from "@/components/RichEditor"; // Importando o RichEditor
 import { Descendant } from "slate";
 import { CustomElement } from "@/types";
+import Image from "next/image";
+
+interface ProductImage {
+    id: number;
+    image_path: string;
+}
 
 interface EditProductModalProps {
     product: Product;
@@ -31,6 +41,10 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
     onSave,
     categories,
 }) => {
+    const [existingImages, setExistingImages] = useState<ProductImage[]>([]);
+    const [imagesToDelete, setImagesToDelete] = useState<number[]>([]);
+    const [newImages, setNewImages] = useState<File[]>([]);
+
     const [formData, setFormData] = useState({
         name: product.name,
         id_category: product.id_category,
@@ -53,6 +67,22 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
             ]; // Valor padrão se falhar
         }
     });
+
+    // Memoiza a função fetchProductImages para que ela não seja recriada em cada renderização
+    const fetchProductImages = useCallback(async () => {
+        try {
+            const response = await api.get(
+                `/products_images/find/by_product_id/${product.id}`
+            );
+            setExistingImages(response.data);
+        } catch (error) {
+            console.error("Failed to fetch product images:", error);
+        }
+    }, [product.id]); // product.id é a dependência da função
+
+    useEffect(() => {
+        fetchProductImages();
+    }, [fetchProductImages]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type, checked } = e.target;
@@ -79,6 +109,21 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
         }
     };
 
+    const handleDeleteImage = (imageId: number) => {
+        setImagesToDelete((prev) => [...prev, imageId]);
+        setExistingImages((prev) =>
+            prev.filter((image) => image.id !== imageId)
+        );
+    };
+
+    const handleNewImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files; // Pega a lista de arquivos
+        if (files && files.length > 0) {
+            // Garante que files não é null e tem arquivos
+            setNewImages((prev) => [...prev, ...Array.from(files)]);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -91,8 +136,6 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
         productData.append("price", String(formData.price));
         productData.append("stock_quantity", String(formData.stock_quantity));
         productData.append("activated", String(formData.activated));
-
-        console.log([...productData]);
 
         if (formData.image_thumbnail_name) {
             productData.append(
@@ -107,6 +150,35 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                     "Content-Type": "multipart/form-data",
                 },
             });
+
+            // Delete images marked for deletion
+            for (const imageId of imagesToDelete) {
+                try {
+                    await api.delete(`/products_images/delete/${imageId}`);
+                } catch (error) {
+                    console.error(`Failed to delete image ${imageId}:`, error);
+                }
+            }
+
+            // Upload new images
+            for (const image of newImages) {
+                const imageData = new FormData();
+                imageData.append("file", image);
+                try {
+                    await api.post(
+                        `/products_images/upload/by_product_id?id_product=${product.id}`,
+                        imageData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    );
+                } catch (error) {
+                    console.error("Failed to upload image:", error);
+                }
+            }
+
             onSave();
             onClose();
         } catch (error) {
@@ -207,6 +279,75 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
                             accept="image/*"
                             style={{ marginTop: "8px" }}
                         />
+                    </Box>
+
+                    <Box mt={2}>
+                        <InputLabel shrink>Imagens do Produto</InputLabel>
+                        <Grid container spacing={1}>
+                            {existingImages.map((image) => (
+                                <Grid item xs={3} key={image.id}>
+                                    <Box position="relative">
+                                        <Image
+                                            src={getImageUrl(image.image_path)}
+                                            alt={`Imagem ${image.id}`}
+                                            style={{ width: "100%" }}
+                                            layout="responsive"
+                                            width={100}
+                                            height={100}
+                                        />
+                                        <IconButton
+                                            onClick={() =>
+                                                handleDeleteImage(image.id)
+                                            }
+                                            style={{
+                                                position: "absolute",
+                                                top: 0,
+                                                right: 0,
+                                            }}
+                                        >
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Grid>
+                            ))}
+                        </Grid>
+                    </Box>
+
+                    <Box
+                        mt={2}
+                        p={2}
+                        border="1px solid #ccc"
+                        borderRadius="4px"
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="flex-start"
+                    >
+                        <InputLabel shrink>Adicionar Novas Imagens</InputLabel>
+                        <input
+                            type="file"
+                            name="new_product_images"
+                            multiple
+                            onChange={handleNewImagesChange}
+                            accept="image/*"
+                            style={{ marginTop: "8px" }}
+                        />
+                        {newImages.length > 0 && (
+                            <Box mt={2} display="flex" flexWrap="wrap">
+                                {newImages.map((image, index) => (
+                                    <Box key={index} mr={1} mb={1}>
+                                        <Image
+                                            src={URL.createObjectURL(image)}
+                                            alt={`Nova Imagem ${index + 1}`}
+                                            style={{
+                                                objectFit: "cover",
+                                            }}
+                                            width={100}
+                                            height={100}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
                     </Box>
 
                     <Box sx={{ mt: 2 }}>

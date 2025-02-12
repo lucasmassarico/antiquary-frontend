@@ -1,12 +1,10 @@
 // libs
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { api, staticFilesServer } from "@/lib/axios";
+import { api } from "@/lib/axios";
 
 // components
-import { Container } from "@/components/Container";
-import { ProductsContainer } from "@/components/ProductsContainer";
-import { ProductCard } from "@/components/ProductCard";
+import ProductList from "@/components/ProductList";
 
 // types
 import { Product } from "@/types";
@@ -43,35 +41,17 @@ export default function BuscaProducts() {
 
     return (
         <>
-            <Container>
-                {error ? (
-                    <CategoryNotFound />
-                ) : (
-                    <>
-                        {products.length === 0 ? (
-                            <CategoryNotFound />
-                        ) : (
-                            <ProductsContainer>
-                                {products.map((product) => (
-                                    <ProductCard
-                                        key={product.id}
-                                        title={toTitleCase(product.name)}
-                                        imageSrc={`${staticFilesServer}${
-                                            product.image_thumbnail_name.startsWith(
-                                                "/"
-                                            )
-                                                ? ""
-                                                : "/"
-                                        }${product.image_thumbnail_name}`}
-                                        imageAlt={product.name}
-                                        price={product.price}
-                                    />
-                                ))}
-                            </ProductsContainer>
-                        )}
-                    </>
-                )}
-            </Container>
+            {error ? (
+                <CategoryNotFound />
+            ) : (
+                <>
+                    {products.length === 0 ? (
+                        <CategoryNotFound />
+                    ) : (
+                        <ProductList products={products} />
+                    )}
+                </>
+            )}
         </>
     );
 }

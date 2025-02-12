@@ -13,7 +13,7 @@ export const {
     styled,
     css,
     globalCss,
-    keyFrames,
+    keyframes,
     getCssText,
     theme,
     createTheme,

@@ -1,31 +1,30 @@
-// src/components/admin/CategoriesManagement.tsx
-
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
-import { Category } from "@/types";
+import { User } from "@/types";
 import { Button, Box } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
-import EditCategoryModal from "./EditCategoryModal";
-import CreateCategoryModal from "./CreateCategoryModal";
+import EditUserModal from "./EditUserModal";
+import CreateUserModal from "./CreateUserModal";
 
-const CategoriesManagement: React.FC = () => {
-    const [categories, setCategories] = useState<Category[]>([]);
+const UsersManagement: React.FC = () => {
+    const [users, setUsers] = useState<User[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [pageSize, setPageSize] = useState<number>(30);
-    const [editCategory, setEditCategory] = useState<Category | null>(null);
+    const [editUser, setEditUser] = useState<User | null>(null);
     const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        fetchCategories();
+        fetchUsers();
     }, []);
 
-    const fetchCategories = async () => {
+    const fetchUsers = async () => {
         try {
-            const response = await api.get("/categories/find/all");
-            setCategories(response.data);
+            const response = await api.get("/users/find/all", {
+                headers: { requiresAuth: true },
+            });
+            setUsers(response.data);
         } catch (error) {
-            console.error("Failed to fetch categories:", error);
+            console.error("Failed to fetch users:", error);
         } finally {
             setLoading(false);
         }
@@ -34,23 +33,40 @@ const CategoriesManagement: React.FC = () => {
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 70 },
         { field: "name", headerName: "Nome", width: 200 },
-        { field: "url_name", headerName: "URL Name", width: 200 },
-        { field: "discount", headerName: "Desconto", width: 130 },
+        { field: "email", headerName: "Email", width: 250 },
+        {
+            field: "active",
+            headerName: "Ativo",
+            width: 100,
+            valueGetter: (value, row) => (row.active ? "Sim" : "Não"),
+        },
+        {
+            field: "access_role",
+            headerName: "Nível de Acesso",
+            width: 150,
+            valueGetter: (value, row) => {
+                const role = row.access_role;
+                if (role === 1) return "Super Usuário";
+                if (role === 99) return "Administrador";
+                return "Desconhecido";
+            },
+        },
         {
             field: "actions",
             headerName: "Ações",
             width: 250,
             sortable: false,
             renderCell: (params) => {
-                const category = params.row as Category;
+                const user = params.row as User;
                 return (
                     <>
                         <Button
                             variant="contained"
                             color="primary"
                             size="small"
-                            onClick={() => setEditCategory(category)}
+                            onClick={() => setEditUser(user)}
                             style={{ marginRight: 8 }}
+                            disabled
                         >
                             Alterar
                         </Button>
@@ -58,7 +74,7 @@ const CategoriesManagement: React.FC = () => {
                             variant="contained"
                             color="error"
                             size="small"
-                            onClick={() => handleDeleteCategory(category.id)}
+                            onClick={() => handleDeleteUser(user.id)}
                         >
                             Deletar
                         </Button>
@@ -68,18 +84,16 @@ const CategoriesManagement: React.FC = () => {
         },
     ];
 
-    const handleDeleteCategory = async (categoryId: number) => {
-        if (confirm("Você tem certeza que deseja deletar esta categoria?")) {
+    const handleDeleteUser = async (userId: number) => {
+        if (confirm("Você tem certeza que deseja deletar este usuário?")) {
             try {
-                await api.delete(`/categories/delete/${categoryId}`);
-                setCategories(
-                    categories.filter((category) => category.id !== categoryId)
-                );
+                await api.delete(`/users/delete/${userId}`, {
+                    headers: { requiresAuth: true },
+                });
+                setUsers(users.filter((user) => user.id !== userId));
             } catch (error) {
-                console.error("Failed to delete category:", error);
-                alert(
-                    "Falha ao deletar categoria. Por favor, tente novamente."
-                );
+                console.error("Failed to delete user:", error);
+                alert("Falha ao deletar usuário. Por favor, tente novamente.");
             }
         }
     };
@@ -92,10 +106,10 @@ const CategoriesManagement: React.FC = () => {
                 onClick={() => setCreateModalOpen(true)}
                 style={{ marginBottom: 16 }}
             >
-                Nova Categoria
+                Novo Usuário
             </Button>
             <DataGrid
-                rows={categories}
+                rows={users}
                 columns={columns}
                 pagination
                 paginationMode="client"
@@ -103,21 +117,21 @@ const CategoriesManagement: React.FC = () => {
                 disableRowSelectionOnClick
                 autoHeight
             />
-            {editCategory && (
-                <EditCategoryModal
-                    category={editCategory}
-                    onClose={() => setEditCategory(null)}
-                    onSave={fetchCategories}
+            {editUser && (
+                <EditUserModal
+                    user={editUser}
+                    onClose={() => setEditUser(null)}
+                    onSave={fetchUsers}
                 />
             )}
             {createModalOpen && (
-                <CreateCategoryModal
+                <CreateUserModal
                     onClose={() => setCreateModalOpen(false)}
-                    onSave={fetchCategories}
+                    onSave={fetchUsers}
                 />
             )}
         </Box>
     );
 };
 
-export default CategoriesManagement;
+export default UsersManagement;

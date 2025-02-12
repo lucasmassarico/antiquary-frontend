@@ -1,13 +1,13 @@
 import React from "react";
 import withAuth from "@/components/WithAuth";
+import Dashboard from "@/components/admin/Dashboard";
 
-const Dashboard: React.FC = () => {
+const DashboardPage: React.FC = () => {
     return (
         <div>
-            <h1>Admin Dashboard</h1>
-            {/* Dashboard content */}
+            <Dashboard />
         </div>
     );
 };
 
-export default withAuth(Dashboard);
+export default withAuth(DashboardPage);

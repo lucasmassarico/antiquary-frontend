@@ -1,20 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { Product, Category } from "@/types";
-import { Button, Box } from "@mui/material";
+import { Button, Box, TextField } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 import EditProductModal from "./EditProductModal";
 import CreateProductModal from "./CreateProductModal";
+import SellProductModal from "./SellProductModal";
 
 const ProductsManagement: React.FC = () => {
     const [products, setProducts] = useState<Product[]>([]);
+    const [sellProduct, setSellProduct] = useState<Product | null>(null);
+
     const [loading, setLoading] = useState<boolean>(true);
     const [pageSize, setPageSize] = useState<number>(30);
     const [page, setPage] = useState<number>(0);
     const [editProduct, setEditProduct] = useState<Product | null>(null);
     const [createModalOpen, setCreateModalOpen] = useState<boolean>(false);
     const [categories, setCategories] = useState<Category[]>([]);
+
+    const [searchQuery, setSearchQuery] = useState<string>("");
 
     const categoryMap = categories.reduce((map, category) => {
         map[category.id] = category.name;
@@ -35,6 +40,16 @@ const ProductsManagement: React.FC = () => {
             setLoading(false);
         }
     };
+
+    const filteredProducts = React.useMemo(() => {
+        if (!searchQuery) {
+            return products;
+        }
+        const lowercasedQuery = searchQuery.toLowerCase();
+        return products.filter((product) =>
+            product.name.toLowerCase().includes(lowercasedQuery)
+        );
+    }, [products, searchQuery]);
 
     const columns: GridColDef[] = [
         { field: "id", headerName: "ID", width: 70 },
@@ -61,7 +76,7 @@ const ProductsManagement: React.FC = () => {
         {
             field: "actions",
             headerName: "Ações",
-            width: 250,
+            width: 280,
             sortable: false,
             renderCell: (params) => {
                 const product = params.row as Product;
@@ -78,11 +93,21 @@ const ProductsManagement: React.FC = () => {
                         </Button>
                         <Button
                             variant="contained"
-                            color="secondary"
                             size="small"
+                            color="error"
                             onClick={() => handleDeleteProduct(product.id)}
+                            style={{ marginRight: 8 }}
                         >
                             Deletar
+                        </Button>
+                        <Button
+                            variant="contained"
+                            size="small"
+                            color="success"
+                            onClick={() => handleSellProduct(product)}
+                            disabled={product.stock_quantity === 0}
+                        >
+                            Venda
                         </Button>
                     </>
                 );
@@ -118,18 +143,37 @@ const ProductsManagement: React.FC = () => {
         }
     };
 
+    const handleSellProduct = (product: Product) => {
+        setSellProduct(product);
+    };
+
     return (
         <Box sx={{ width: "80%", margin: "0 auto" }}>
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={() => setCreateModalOpen(true)}
-                style={{ marginBottom: 16 }}
+            <Box
+                sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: 2,
+                }}
             >
-                Novo Produto
-            </Button>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() => setCreateModalOpen(true)}
+                >
+                    Novo Produto
+                </Button>
+                <TextField
+                    variant="outlined"
+                    size="small"
+                    label="Pesquisar produtos"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </Box>
             <DataGrid
-                rows={products}
+                rows={filteredProducts}
                 columns={columns}
                 pagination
                 paginationMode="client"
@@ -150,6 +194,16 @@ const ProductsManagement: React.FC = () => {
                     categories={categories}
                     onClose={() => setCreateModalOpen(false)}
                     onSave={fetchProducts}
+                />
+            )}
+            {sellProduct && (
+                <SellProductModal
+                    product={sellProduct}
+                    onClose={() => setSellProduct(null)}
+                    onSave={() => {
+                        fetchProducts(); // Refresh the product list
+                        setSellProduct(null);
+                    }}
                 />
             )}
         </Box>

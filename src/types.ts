@@ -9,6 +9,7 @@ export interface Product {
     stock_quantity: number;
     activated: boolean;
     image_thumbnail_name: string;
+    publication_date: string;
 }
 
 export interface Category {
@@ -34,4 +35,21 @@ export interface CustomText {
     bold?: boolean;
     italic?: boolean;
     underline?: boolean;
+}
+
+export interface SoldProduct {
+    id: number;
+    product_id: number;
+    quantity_sold: number;
+    sale_price: number;
+    sale_date: string; // ISO date string
+}
+
+export interface User {
+    id: number;
+    name: string;
+    email: string;
+    password?: string;
+    active: boolean;
+    access_role: number;
 }

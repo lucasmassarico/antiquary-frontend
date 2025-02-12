@@ -17,6 +17,7 @@ import { Category } from "@/types";
 import RichEditor from "@/components/RichEditor"; // Importando o componente RichEditor
 import { Descendant } from "slate";
 import { CustomElement } from "@/types";
+import Image from "next/image";
 
 interface CreateProductModalProps {
     onClose: () => void;
@@ -37,6 +38,7 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
         activated: true,
         image_thumbnail_name: null as File | null,
     });
+    const [additionalImages, setAdditionalImages] = useState<File[]>([]);
 
     // Estado para o Slate editor
     const [editorValue, setEditorValue] = useState<Descendant[]>([
@@ -52,6 +54,15 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
             ...prev,
             [name]: type === "checkbox" ? checked : value,
         }));
+    };
+
+    const handleAdditionalImagesChange = (
+        e: React.ChangeEvent<HTMLInputElement>
+    ) => {
+        const files = e.target.files;
+        if (files && files.length > 0) {
+            setAdditionalImages((prev) => [...prev, ...Array.from(files)]);
+        }
     };
 
     const handleSelectChange = (e: SelectChangeEvent<number>) => {
@@ -92,11 +103,31 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
         }
 
         try {
-            await api.post("/products/create", productData, {
+            const response = await api.post("/products/create", productData, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
             });
+            const createdProduct = response.data;
+
+            // Upload additional images
+            if (additionalImages.length > 0) {
+                for (const image of additionalImages) {
+                    const imageData = new FormData();
+                    imageData.append("file", image);
+
+                    await api.post(
+                        `/products_images/upload/by_product_id?id_product=${createdProduct.id}`,
+                        imageData,
+                        {
+                            headers: {
+                                "Content-Type": "multipart/form-data",
+                            },
+                        }
+                    );
+                }
+            }
+
             onSave();
             onClose();
         } catch (error) {
@@ -198,6 +229,45 @@ const CreateProductModal: React.FC<CreateProductModalProps> = ({
                             required
                             style={{ marginTop: "8px" }}
                         />
+                    </Box>
+
+                    {/* Upload de imagens adicionais */}
+                    <Box
+                        mt={2}
+                        p={2}
+                        border="1px solid #ccc"
+                        borderRadius="4px"
+                        display="flex"
+                        flexDirection="column"
+                        alignItems="flex-start"
+                    >
+                        <InputLabel shrink>Imagens do Produto</InputLabel>
+                        <input
+                            type="file"
+                            name="product_images"
+                            multiple
+                            onChange={handleAdditionalImagesChange}
+                            accept="image/*"
+                            style={{ marginTop: "8px" }}
+                        />
+                        {/* Optionally display selected images */}
+                        {additionalImages.length > 0 && (
+                            <Box mt={2} display="flex" flexWrap="wrap">
+                                {additionalImages.map((image, index) => (
+                                    <Box key={index} mr={1} mb={1}>
+                                        <Image
+                                            src={URL.createObjectURL(image)}
+                                            alt={`Imagem ${index + 1}`}
+                                            style={{
+                                                objectFit: "cover",
+                                            }}
+                                            width={100}
+                                            height={100}
+                                        />
+                                    </Box>
+                                ))}
+                            </Box>
+                        )}
                     </Box>
 
                     <Box sx={{ mt: 2 }}>

@@ -4,6 +4,7 @@ import { DotsThreeOutline } from "phosphor-react";
 import Image from "next/image";
 import { Button } from "../Button";
 import { useRouter } from "next/router";
+import { Category } from "@/types";
 
 interface ProductCardProps {
     id: number;
@@ -13,6 +14,7 @@ interface ProductCardProps {
     price?: number;
     activated: boolean;
     stock_quantity: number;
+    category?: Category;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -23,6 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     price,
     activated,
     stock_quantity,
+    category,
 }) => {
     const isActivated = activated && stock_quantity > 0;
     const isUnavailable = !isActivated;
@@ -35,28 +38,55 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         }
     };
 
+    const discount = category?.discount || 0;
+
+    const discountedPrice =
+        price && discount > 0 ? price * ((100 - discount) / 100) : price;
+
     return (
         <Box
+            onClick={handleViewProduct} // Evento de clique em todo o card
             sx={{
                 display: "grid",
                 justifyContent: "center",
                 alignItems: "center",
-                border: "1px solid #E0E0E0", // substitui $gray300
+                border: "1px solid #E0E0E0",
                 overflow: "hidden",
-                backgroundColor: "#fff", // substitui $white
-                borderRadius: 2, // substitui $md
+                backgroundColor: "#fff",
+                borderRadius: 2,
                 maxHeight: "25rem",
                 maxWidth: "15rem",
-                opacity: isActivated ? 1 : 0.5, // comportamento ativado/desativado
+                opacity: isActivated ? 1 : 0.5,
+                cursor: isUnavailable ? "not-allowed" : "pointer",
+                position: "relative", // Para posicionar o badge de desconto
             }}
         >
+            {/* Badge de Desconto */}
+            {discount > 0 && (
+                <Box
+                    sx={{
+                        position: "absolute",
+                        top: 8,
+                        right: 8,
+                        backgroundColor: "#512da8",
+                        color: "#fff",
+                        padding: "0.2rem 0.5rem",
+                        borderRadius: "4px",
+                        fontWeight: "bold",
+                        fontSize: "0.9rem",
+                    }}
+                >
+                    {`${discount}% OFF`}
+                </Box>
+            )}
+            {/* Imagem */}
             <Box
                 sx={{
                     overflow: "hidden",
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    height: "9rem", // substitui $36
+                    height: "9rem",
                 }}
             >
                 <Image
@@ -72,46 +102,82 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                     priority
                 />
             </Box>
+            {/* Conteúdo */}
             <Box sx={{ overflow: "hidden", padding: 2 }}>
+                {/* Título */}
                 <Typography
                     variant="h6"
                     sx={{
-                        height: "2.5rem", // substitui $10
+                        height: "4rem",
                         display: "-webkit-box",
                         overflow: "hidden",
                         WebkitLineClamp: 2,
                         WebkitBoxOrient: "vertical",
                         textOverflow: "ellipsis",
+                        fontSize: "1.2rem",
                     }}
+                    title={title}
                 >
                     {title}
                 </Typography>
+                {/* Preços */}
                 <Box
                     sx={{
-                        height: "2rem", // substitui $4
-                        margin: "1rem 0", // substitui $2
+                        minHeight: "2.7rem",
+                        display: "flex",
+                        flexDirection: "column", // Mantém os preços em linhas separadas
+                        alignItems: "flex-start",
+                        paddingTop: "0.5rem",
+                        justifyContent: "end",
                     }}
                 >
-                    <Typography variant="h6" sx={{ color: "#FFA726" }}>
-                        {price
-                            ? `R$ ${price.toLocaleString("pt-BR", {
+                    {/* Preço Original Riscado */}
+                    {discount > 0 && price && (
+                        <Typography
+                            variant="body2"
+                            sx={{
+                                color: "#757575",
+                                textDecoration: "line-through",
+                                fontSize: "0.9rem",
+                                margin: 0,
+                                lineHeight: 0.5, // Reduz o espaçamento entre as linhas
+                            }}
+                        >
+                            {`R$ ${price.toLocaleString("pt-BR", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                            })}`}
+                        </Typography>
+                    )}
+                    {/* Preço com Desconto */}
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: "#FFA726",
+                            marginTop: "0.2rem", // Reduz o espaçamento entre os preços
+                            fontSize: "1.3rem",
+                            fontWeight: "bold",
+                        }}
+                    >
+                        {discountedPrice
+                            ? `R$ ${discountedPrice.toLocaleString("pt-BR", {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: 2,
                               })}`
                             : ""}
                     </Typography>
                 </Box>
+                {/* Botão */}
                 <Box sx={{ display: "grid", marginTop: "1rem" }}>
                     <Button
                         customVariant="productCard"
                         color={isUnavailable ? "secondary" : "primary"}
                         disabled={isUnavailable}
-                        onClick={handleViewProduct}
                         startIcon={
                             isUnavailable ? undefined : <DotsThreeOutline />
                         }
                     >
-                        {isUnavailable ? "Indisponível" : "Ver mais"}
+                        {isUnavailable ? "Indisponível" : "Ver Detalhes"}
                     </Button>
                 </Box>
             </Box>

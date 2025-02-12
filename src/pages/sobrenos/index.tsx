@@ -52,7 +52,7 @@ export default function SobreNos() {
                     <Grid item xs={12} md={6}>
                         <Box>
                             <Image
-                                src="/static/loja_ficticia.webp"
+                                src="/antiquario_antigo.jpg"
                                 alt="Imagem da loja antiga"
                                 width={550}
                                 height={300}
@@ -138,7 +138,7 @@ export default function SobreNos() {
                     <Grid item xs={12} md={6}>
                         <Box>
                             <Image
-                                src="/static/movel_reformado.png"
+                                src="/movel_reformado.png"
                                 alt="Móveis rústicos de madeira"
                                 width={550}
                                 height={300}

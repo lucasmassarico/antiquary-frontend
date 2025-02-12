@@ -17,7 +17,7 @@ export default function Document() {
                     rel="stylesheet"
                 />
 
-                <link rel="shortcut icon" href="/static/armchair.svg" />
+                <link rel="shortcut icon" href="/armchair.svg" />
 
                 <style
                     id="stitches"

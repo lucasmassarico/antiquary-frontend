@@ -27,7 +27,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ product }) => {
         <Box mt={4}>
             <Tabs value={tabIndex} onChange={handleTabChange} centered>
                 <Tab label="Descrição" />
-                <Tab label="Especificações" />
+                <Tab label="Especificações" disabled />
                 {/* Add more tabs if needed */}
             </Tabs>
 
